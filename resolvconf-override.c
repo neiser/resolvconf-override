@@ -61,6 +61,7 @@ override_ns (void)
 
 struct hostent *gethostbyname(const char *name)
 {
+	fprintf(stdout, "gethostbyname called\n");
 	if (res_init () < 0)
 		return NULL;
 	struct hostent * (*f)() = dlsym (RTLD_NEXT, "gethostbyname");
@@ -73,14 +74,17 @@ int getaddrinfo(const char *node, const char *service,
 		const struct addrinfo *hints,
 		struct addrinfo **res)
 {
+	fprintf(stdout, "getaddrinfo called\n");
 	if (res_init () < 0)
 		return EAI_SYSTEM;
 	int (*f)() = dlsym (RTLD_NEXT, "getaddrinfo");
+	
 	return f(node, service, hints, res);
 }
 
 int __res_init(void)
 {
+	fprintf(stdout, "__res_init called\n");
 	int (*f)() = dlsym (RTLD_NEXT, "__res_init");
 	assert (f);
 	int ret = f();
